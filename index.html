@@ -6,6 +6,8 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
+    <script src="data.js"></script>
+    <script src="language-switch.js"></script>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
     <!-- 导航栏 -->
@@ -15,10 +17,7 @@
                 <i class="fas fa-water mr-2"></i><span class="lang-zh">两杯水显化法</span><span class="lang-en hidden">Two Glasses Method</span>
             </a>
             <div class="flex items-center space-x-4">
-                <select id="language-selector" class="bg-gray-100 border border-gray-300 text-gray-700 rounded-lg px-3 py-1">
-                    <option value="zh-CN">中文</option>
-                    <option value="en-US">English</option>
-                </select>
+                <div id="language-switch"></div>
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#features" class="text-gray-600 hover:text-blue-500 transition">功能特点</a>
                     <a href="#how-it-works" class="text-gray-600 hover:text-blue-500 transition">工作原理</a>
@@ -406,34 +405,32 @@
     </script>
 
     <script>
-        // Language switching functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const languageSelector = document.getElementById('language-selector');
-            
-            // Set initial language based on browser or saved preference
-            const savedLang = localStorage.getItem('preferredLanguage') || 'zh-CN';
-            languageSelector.value = savedLang;
-            setLanguage(savedLang);
-            
-            // Add change event listener
-            languageSelector.addEventListener('change', function() {
-                const lang = this.value;
-                setLanguage(lang);
+        // 设置默认语言
+        let currentLang = "zh-CN";
+        
+        // 尝试从本地存储获取语言设置
+        const storedLang = localStorage.getItem('preferredLanguage');
+        if (storedLang) {
+            currentLang = storedLang;
+        }
+        
+        // 语言切换函数
+        function switchLanguage(lang) {
+            if (lang) {
+                currentLang = lang;
                 localStorage.setItem('preferredLanguage', lang);
-            });
-            
-            function setLanguage(lang) {
-                // Hide all language elements
+                
+                // 隐藏所有语言元素
                 document.querySelectorAll('.lang-zh, .lang-en').forEach(el => {
                     el.classList.add('hidden');
                 });
                 
-                // Show selected language elements
+                // 显示选中语言的元素
                 document.querySelectorAll(`.lang-${lang === 'zh-CN' ? 'zh' : 'en'}`).forEach(el => {
                     el.classList.remove('hidden');
                 });
                 
-                // Update iframe src if they exist
+                // 更新iframe的src
                 document.querySelectorAll('iframe').forEach(iframe => {
                     const currentSrc = iframe.src;
                     if (currentSrc.includes('.html')) {
@@ -442,6 +439,15 @@
                     }
                 });
             }
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用当前语言设置
+            switchLanguage(currentLang);
+            
+            // 初始化语言切换器
+            createLanguageSwitch('language-switch', {"zh-CN": "中文", "en-US": "English"});
         });
     </script>
 </body>

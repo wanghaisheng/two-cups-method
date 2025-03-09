@@ -3,7 +3,10 @@ function createLanguageSwitch(elementId, languages) {
     const element = document.getElementById(elementId);
     if (!element) return;
     
-    element.className = "absolute top-4 right-4 z-10";
+    // 不强制设置绝对定位，保留元素原有的类名并添加z-index
+    if (!element.className.includes('z-')) {
+        element.className += " z-20";
+    }
     
     // 创建语言选择器
     const langSelect = document.createElement('select');

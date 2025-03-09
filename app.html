@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>两杯水显化法 - 应用演示</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .app-container {
+            width: 375px;
+            height: 812px;
+            margin: 20px auto;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            background-color: #fff;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #f0f0f0;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #888;
+            font-size: 10px;
+            padding: 10px;
+        }
+        .nav-item.active {
+            color: #4f46e5;
+        }
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        iframe {
+            width: 100%;
+            height: calc(100% - 124px);
+            border: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="text-center mb-6">
+        <a href="index.html" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+            <i class="fas fa-arrow-left mr-2"></i> 返回首页
+        </a>
+    </div>
+    
+    <div class="app-container">
+        <!-- iOS 状态栏 -->
+        <div class="status-bar">
+            <div>9:41</div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-full"></i>
+            </div>
+        </div>
+        
+        <!-- 主内容区域 - 默认显示主页 -->
+        <iframe id="appFrame" src="home.html"></iframe>
+        
+        <!-- 底部导航栏 -->
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="navigate('home.html', this)">
+                <div class="nav-icon"><i class="fas fa-home"></i></div>
+                <div>首页</div>
+            </div>
+            <div class="nav-item" onclick="navigate('wish_set.html', this)">
+                <div class="nav-icon"><i class="fas fa-heart"></i></div>
+                <div>愿望</div>
+            </div>
+            <div class="nav-item" onclick="navigate('practice.html', this)">
+                <div class="nav-icon"><i class="fas fa-glass-water"></i></div>
+                <div>练习</div>
+            </div>
+            <div class="nav-item" onclick="navigate('progress.html', this)">
+                <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                <div>进度</div>
+            </div>
+            <div class="nav-item" onclick="navigate('profile.html', this)">
+                <div class="nav-icon"><i class="fas fa-user"></i></div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-6 text-center text-gray-600">
+        <p>点击底部导航栏的图标可以切换不同的页面</p>
+    </div>
+    
+    <script>
+        function navigate(page, navItem) {
+            // Add language parameter to the page URL
+            const lang = localStorage.getItem('preferredLanguage') || 'zh-CN';
+            document.getElementById('appFrame').src = `${page}?lang=${lang}`;
+            
+            // 移除所有导航项的active类
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // 为当前点击的导航项添加active类
+            navItem.classList.add('active');
+        }
+        
+        // Initialize with language preference
+        document.addEventListener('DOMContentLoaded', function() {
+            const lang = localStorage.getItem('preferredLanguage') || 'zh-CN';
+            const currentSrc = document.getElementById('appFrame').src;
+            if (!currentSrc.includes('lang=')) {
+                document.getElementById('appFrame').src = `home.html?lang=${lang}`;
+            }
+        });
+    </script>
+</body>
+</html>

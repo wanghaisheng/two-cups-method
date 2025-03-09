@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">显化技巧 - 两杯水显化法</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        .card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .category-chip {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .category-chip:hover, .category-chip.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="header text-white p-6 rounded-b-3xl shadow-md">
+        <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold" id="page-header">显化技巧</h1>
+            <div class="flex space-x-4">
+                <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-bookmark text-sm"></i>
+                </button>
+            </div>
+        </div>
+        <div id="language-switch"></div>
+    </div>
+    
+    <!-- 搜索框 -->
+    <div class="px-5 mt-6">
+        <div class="relative">
+            <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
+            <input type="text" id="search-input" placeholder="搜索显化技巧..." class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl search-input">
+        </div>
+    </div>
+    
+    <!-- 分类标签 -->
+    <div class="px-5 mt-4 overflow-x-auto whitespace-nowrap pb-2" id="categories-container">
+        <!-- Categories will be populated from data.js -->
+    </div>
+    
+    <!-- 技巧列表 -->
+    <div class="px-5 mt-4 mb-20" id="tips-container">
+        <!-- Tips will be populated from data.js -->
+    </div>
+    
+    <script src="data.js"></script>
+    <script src="language-switch.js"></script>
+    <script>
+        // 设置默认语言
+        let currentLang = "zh-CN";
+        
+        // 尝试从URL中获取语言设置
+        function getUrlParam(param) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get(param);
+        }
+        
+        // 尝试从URL中获取语言设置
+        const langParam = getUrlParam('lang');
+        if (langParam && pageData[langParam]) {
+            currentLang = langParam;
+        } else {
+            // 尝试从本地存储获取语言设置
+            const storedLang = localStorage.getItem('preferredLanguage');
+            if (storedLang && pageData[storedLang]) {
+                currentLang = storedLang;
+            }
+        }
+        
+        // 加载页面内容
+        function loadPageContent() {
+            const data = pageData[currentLang].tips;
+            
+            // 设置页面标题
+            document.getElementById('page-title').textContent = data.title;
+            document.getElementById('page-header').textContent = data.header;
+            document.getElementById('search-input').placeholder = data.searchPlaceholder;
+            
+            // 加载分类
+            const categoriesContainer = document.getElementById('categories-container');
+            categoriesContainer.innerHTML = '';
+            
+            data.categories.forEach((category, index) => {
+                const categoryElement = document.createElement('div');
+                categoryElement.className = `category-chip ${index === 0 ? 'active' : ''}`;
+                categoryElement.textContent = category;
+                categoryElement.onclick = function() {
+                    document.querySelectorAll('.category-chip').forEach(chip => chip.classList.remove('active'));
+                    this.classList.add('active');
+                    // 这里可以添加过滤技巧的功能
+                };
+                categoriesContainer.appendChild(categoryElement);
+            });
+            
+            // 加载技巧列表
+            const tipsContainer = document.getElementById('tips-container');
+            tipsContainer.innerHTML = '';
+            
+            data.tips.forEach(tip => {
+                const tipElement = document.createElement('div');
+                tipElement.className = 'card bg-white mb-4';
+                tipElement.onclick = function() { showDetail(tip.id); };
+                
+                let tipHTML = `
+                    <div class="p-5">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
+                                    <i class="${tip.icon} text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-800">${tip.title}</h3>
+                                    <p class="text-sm text-gray-600 mt-1">${tip.description}</p>
+                                </div>
+                            </div>
+                            <span class="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">${tip.category}</span>
+                        </div>
+                    </div>
+                    <div id="${tip.id}" class="hidden px-5 pb-5">
+                        <div class="border-t border-gray-100 pt-4">
+                `;
+                
+                // 处理不同类型的内容
+                if (tip.content.introduction) {
+                    tipHTML += `<p class="text-gray-700 mb-4">${tip.content.introduction}</p>`;
+                }
+                
+                if (tip.content.methods) {
+                    tipHTML += `
+                        <h4 class="font-medium text-gray-800 mb-2">${tip.content.methods.title}</h4>
+                        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+                    `;
+                    
+                    tip.content.methods.items.forEach(item => {
+                        tipHTML += `<li>${item}</li>`;
+                    });
+                    
+                    tipHTML += `</ul>`;
+                }
+                
+                if (tip.content.reasons) {
+                    tipHTML += `
+                        <h4 class="font-medium text-gray-800 mb-2">${tip.content.reasons.title}</h4>
+                        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+                    `;
+                    
+                    tip.content.reasons.items.forEach(item => {
+                        tipHTML += `<li>${item}</li>`;
+                    });
+                    
+                    tipHTML += `</ul>`;
+                }
+                
+                if (tip.content.solutions) {
+                    tipHTML += `
+                        <h4 class="font-medium text-gray-800 mb-2">${tip.content.solutions.title}</h4>
+                        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+                    `;
+                    
+                    tip.content.solutions.items.forEach(item => {
+                        tipHTML += `<li>${item}</li>`;
+                    });
+                    
+                    tipHTML += `</ul>`;
+                }
+                
+                if (tip.content.cases) {
+                    tip.content.cases.forEach(caseItem => {
+                        tipHTML += `
+                            <div class="mb-4">
+                                <h4 class="font-medium text-gray-800 mb-2">${caseItem.name}</h4>
+                                <p class="text-gray-700">${caseItem.story}</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                if (tip.content.tip) {
+                    tipHTML += `
+                        <div class="bg-blue-50 p-4 rounded-xl">
+                            <div class="flex items-start">
+                                <i class="fas fa-lightbulb text-blue-500 mt-1 mr-3"></i>
+                                <p class="text-sm text-gray-700">${tip.content.tip}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                if (tip.content.quote) {
+                    tipHTML += `
+                        <div class="bg-green-50 p-4 rounded-xl">
+                            <div class="flex items-start">
+                                <i class="fas fa-quote-left text-green-500 mt-1 mr-3"></i>
+                                <p class="text-sm text-gray-700">${tip.content.quote}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                tipHTML += `
+                        </div>
+                    </div>
+                `;
+                
+                tipElement.innerHTML = tipHTML;
+                tipsContainer.appendChild(tipElement);
+            });
+        }
+        
+        // 初始化页面内容
+        loadPageContent();
+        
+        function showDetail(tipId) {
+            const detailElement = document.getElementById(tipId);
+            if (detailElement.classList.contains('hidden')) {
+                detailElement.classList.remove('hidden');
+            } else {
+                detailElement.classList.add('hidden');
+            }
+        }
+        
+        // 语言切换函数
+        function switchLanguage(lang) {
+            if (pageData[lang]) {
+                currentLang = lang;
+                localStorage.setItem('preferredLanguage', lang);
+                loadPageContent();
+            }
+        }
+        
+        // 初始化语言切换器
+        createLanguageSwitch('language-switch', {"zh-CN": "中文", "en-US": "English"});
+    </script>
+</body>
+</html>

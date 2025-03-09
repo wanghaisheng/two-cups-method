@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进度追踪 - 两杯水显化法</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        .card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .tab {
+            padding: 12px 20px;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+        .tab.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+        }
+        .progress-bar-bg {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #e5e7eb;
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed);
+        }
+        .streak-day {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 0 3px;
+            background-color: #e5e7eb;
+        }
+        .streak-day.completed {
+            background-color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="header text-white p-6 rounded-b-3xl shadow-md">
+        <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold">进度追踪</h1>
+            <div class="flex space-x-4">
+                <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-calendar-alt text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 选项卡导航 -->
+    <div class="flex justify-around mt-6 border-b">
+        <button class="tab active" onclick="switchTab('overview')">总览</button>
+        <button class="tab" onclick="switchTab('history')">历史记录</button>
+        <button class="tab" onclick="switchTab('goals')">目标</button>
+    </div>
+    
+    <!-- 总览选项卡内容 -->
+    <div id="overview-tab" class="tab-content px-5 mt-6">
+        <!-- 显化进度卡片 -->
+        <div class="card bg-white p-5 mb-6">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-lg font-bold text-gray-800">显化进度</h2>
+                <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">财富愿望</span>
+            </div>
+            
+            <p class="text-gray-600 mb-4 text-sm">"我希望能拥有足够的财富，让我和家人过上舒适的生活，同时也能够帮助他人。"</p>
+            
+            <div class="flex justify-between items-center text-sm text-gray-500 mb-2">
+                <span>已显化7天</span>
+                <span>目标：21天</span>
+            </div>
+            
+            <div class="progress-bar-bg mb-6">
+                <div class="progress-bar" style="width: 33%"></div>
+            </div>
+            
+            <div class="bg-indigo-50 p-4 rounded-xl">
+                <div class="flex items-center">
+                    <i class="fas fa-info-circle text-indigo-500 mr-3"></i>
+                    <p class="text-sm text-gray-700">坚持显化21天，你的愿望更容易实现。加油！</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 连续显化记录卡片 -->
+        <div class="card bg-white p-5 mb-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">连续显化记录</h2>
+            
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-500 mr-4">
+                        <i class="fas fa-fire text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">当前连续</p>
+                        <p class="text-xl font-bold text-gray-800">7天</p>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mr-4">
+                        <i class="fas fa-trophy text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-500">最长连续</p>
+                        <p class="text-xl font-bold text-gray-800">14天</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-medium text-gray-700">本周显化情况</h3>
+                    <span class="text-xs text-green-600">已完成4天</span>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <div class="text-center">
+                        <div class="streak-day completed"></div>
+                        <div class="text-xs mt-1">一</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="streak-day completed"></div>
+                        <div class="text-xs mt-1">二</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="streak-day completed"></div>
+                        <div class="text-xs mt-1">三</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="streak-day completed"></div>
+                        <div class="text-xs mt-1">四</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="streak-day"></div>
+                        <div class="text-xs mt-1">五</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="streak-day"></div>
+                        <div class="text-xs mt-1">六</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="streak-day"></div>
+                        <div class="text-xs mt-1">日</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 显化数据统计 -->
+        <div class="card bg-white p-5 mb-20">
+            <h2 class="text-lg font-bold text-gray-800 mb-6">显化数据统计</h2>
+            <canvas id="practiceChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    
+    <!-- 历史记录选项卡内容 -->
+    <div id="history-tab" class="tab-content px-5 mt-6 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800">显化历史记录</h2>
+            <button class="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-sm flex items-center">
+                <i class="fas fa-filter mr-1"></i> 筛选
+            </button>
+        </div>
+        
+        <!-- 历史记录列表 -->
+        <div class="card bg-white p-5 mb-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-glass-water text-indigo-500 mr-2"></i>
+                        <h3 class="font-medium text-gray-800">财富显化练习</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">我希望能拥有足够的财富...</p>
+                    <div class="flex items-center">
+                        <i class="fas fa-clock text-gray-400 text-xs mr-1"></i>
+                        <span class="text-xs text-gray-500">练习时长: 5分钟</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">已完成</span>
+                    <p class="text-xs text-gray-500 mt-2">2023-09-21 09:15</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-white p-5 mb-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-glass-water text-indigo-500 mr-2"></i>
+                        <h3 class="font-medium text-gray-800">财富显化练习</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">我希望能拥有足够的财富...</p>
+                    <div class="flex items-center">
+                        <i class="fas fa-clock text-gray-400 text-xs mr-1"></i>
+                        <span class="text-xs text-gray-500">练习时长: 7分钟</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">已完成</span>
+                    <p class="text-xs text-gray-500 mt-2">2023-09-20 08:45</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-white p-5 mb-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-glass-water text-indigo-500 mr-2"></i>
+                        <h3 class="font-medium text-gray-800">财富显化练习</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">我希望能拥有足够的财富...</p>
+                    <div class="flex items-center">
+                        <i class="fas fa-clock text-gray-400 text-xs mr-1"></i>
+                        <span class="text-xs text-gray-500">练习时长: 6分钟</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">已完成</span>
+                    <p class="text-xs text-gray-500 mt-2">2023-09-19 09:30</p>
+                </div>
+            </div>
+        </div>
+        
+        <button class="w-full py-3 border border-indigo-500 text-indigo-500 rounded-xl font-medium flex items-center justify-center mb-20">
+            <i class="fas fa-history mr-2"></i>
+            查看更多历史记录
+        </button>
+    </div>
+    
+    <!-- 目标选项卡内容 -->
+    <div id="goals-tab" class="tab-content px-5 mt-6 hidden">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-bold text-gray-800">显化目标设定</h2>
+            <button class="bg-indigo-600 text-white px-3 py-1 rounded-lg text-sm flex items-center">
+                <i class="fas fa-plus mr-1"></i> 新增
+            </button>
+        </div>
+        
+        <!-- 目标列表 -->
+        <div class="card bg-white p-5 mb-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">连续显化21天</h3>
+                    <div class="flex justify-between items-center text-sm text-gray-500 mb-2">
+                        <span>进度: 7/21天</span>
+                        <span>33%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar" style="width: 33%"></div>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">进行中</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-white p-5 mb-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">每周显化5次</h3>
+                    <div class="flex justify-between items-center text-sm text-gray-500 mb-2">
+                        <span>进度: 4/5次</span>
+                        <span>80%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">进行中</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card bg-white p-5 mb-20">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-medium text-gray-800 mb-2">累计显化30次</h3>
+                    <div class="flex justify-between items-center text-sm text-gray-500 mb-2">
+                        <span>进度: 27/30次</span>
+                        <span>90%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">进行中</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 切换选项卡
+        function switchTab(tabId) {
+            // 隐藏所有选项卡内容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // 显示选中的选项卡内容
+            document.getElementById(`${tabId}-tab`).classList.remove('hidden');
+            
+            // 更新选项卡样式
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+        
+        // 初始化图表
+        window.onload = function() {
+            const ctx = document.getElementById('practiceChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['9/15', '9/16', '9/17', '9/18', '9/19', '9/20', '9/21'],
+                    datasets: [{
+                        label: '显化时长(分钟)',
+                        data: [4, 6, 5, 0, 6, 7, 5],
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#4f46e5',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
+

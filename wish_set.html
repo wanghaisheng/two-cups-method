@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愿望设定 - 两杯水显化法</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        .card {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .tag {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tag:hover, .tag.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="header text-white p-6 rounded-b-3xl shadow-md">
+        <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold">设定你的愿望</h1>
+            <div class="flex space-x-4">
+                <button class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-question text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 愿望设定表单 -->
+    <div class="px-5 mt-6">
+        <div class="card bg-white p-5 mb-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">我的愿望</h2>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">愿望类别</label>
+                <div class="flex flex-wrap">
+                    <div class="tag active">财富</div>
+                    <div class="tag">健康</div>
+                    <div class="tag">爱情</div>
+                    <div class="tag">事业</div>
+                    <div class="tag">个人成长</div>
+                    <div class="tag">家庭</div>
+                    <div class="tag">其他</div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">描述你的愿望</label>
+                <textarea 
+                    class="w-full h-32 px-4 py-3 border border-gray-300 rounded-xl resize-none text-gray-700 focus:ring-2 focus:ring-indigo-200"
+                    placeholder="请尽可能详细地描述你的愿望，例如：'我希望能拥有足够的财富，让我和家人过上舒适的生活，同时也能够帮助他人。'"
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-1">愿望越具体，显化效果越好</p>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">预期实现时间</label>
+                <div class="flex space-x-3">
+                    <div class="tag active">1个月内</div>
+                    <div class="tag">3个月内</div>
+                    <div class="tag">6个月内</div>
+                    <div class="tag">1年内</div>
+                    <div class="tag">长期</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 情感注入部分 -->
+        <div class="card bg-white p-5 mb-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">情感注入</h2>
+            <p class="text-sm text-gray-600 mb-4">选择与愿望相关的积极情感，这将增强你的显化能量</p>
+            
+            <div class="flex flex-wrap mb-4">
+                <div class="tag active">喜悦</div>
+                <div class="tag">感恩</div>
+                <div class="tag">兴奋</div>
+                <div class="tag">满足</div>
+                <div class="tag">爱</div>
+                <div class="tag">自信</div>
+                <div class="tag">平静</div>
+                <div class="tag">丰盛</div>
+                <div class="tag">自由</div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">描述这些情感如何影响你</label>
+                <textarea 
+                    class="w-full h-24 px-4 py-3 border border-gray-300 rounded-xl resize-none text-gray-700 focus:ring-2 focus:ring-indigo-200"
+                    placeholder="当我想象拥有这个愿望时，我感到无比喜悦和感恩。我能感受到内心的平静和满足..."
+                ></textarea>
+            </div>
+        </div>
+        
+        <!-- 实现设定部分 -->
+        <div class="card bg-white p-5 mb-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">显化计划</h2>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">显化频率</label>
+                <div class="flex space-x-3">
+                    <div class="tag active">每天</div>
+                    <div class="tag">每周3次</div>
+                    <div class="tag">每周5次</div>
+                    <div class="tag">自定义</div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-medium mb-2">提醒时间</label>
+                <input type="time" value="08:00" class="w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-700 focus:ring-2 focus:ring-indigo-200">
+            </div>
+        </div>
+        
+        <!-- 保存按钮 -->
+        <button class="w-full btn-gradient text-white py-4 rounded-xl font-medium flex items-center justify-center mb-20">
+            <i class="fas fa-save mr-2"></i>
+            保存我的愿望
+        </button>
+    </div>
+</body>
+</html>
+
